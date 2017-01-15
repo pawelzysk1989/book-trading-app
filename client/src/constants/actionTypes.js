@@ -1,0 +1,18 @@
+export const ADD_BOOK = 'ADD_BOOK';
+export const REMOVE_BOOK = 'REMOVE_BOOK';
+export const LOAD_MY_BOOKS = 'LOAD_MY_BOOKS';
+export const UNLOAD_MY_BOOKS = 'UNLOAD_MY_BOOKS';
+
+export const SEARCH_FOR_BOOK = 'SEARCH_FOR_BOOK';
+export const CHANGE_SEARCH_CRITERIA = 'CHANGE_SEARCH_CRITERIA';
+
+export const BEGIN_AJAX_CALL = 'BEGIN_AJAX_CALL';
+export const AJAX_CALL_ERROR = 'AJAX_CALL_ERROR';
+
+export const AUTH_USER = 'AUTH_USER';
+export const UNAUTH_USER = 'UNAUTH_USER';
+export const AUTH_ERROR = 'AUTH_ERROR';
+
+export const GET_SETTINGS = 'GET_SETTINGS';
+export const SAVE_SETTINGS = 'SAVE_SETTINGS';
+export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';

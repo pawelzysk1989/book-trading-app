@@ -1,0 +1,94 @@
+//$fa-font-path:"../node_modules/font-awesome/fonts";
+@import '../../node_modules/font-awesome/css/font-awesome.css';
+
+/* Variables */
+$vin-blue: #5bb7db;
+$vin-green: #60b044;
+$vin-red: #ff0000;
+$dark-blue: #006495;
+$white: #FFFFFF;
+$orange: #E0A025;
+$black: #111111;
+
+/* Styles */
+
+body {
+  font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  height:100%;
+  margin: 0;
+  padding-bottom: 70px;
+}
+
+.navbar-default{
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  background-color: $vin-green;
+  .navbar-brand{
+    color: $white;
+    background-color: transparent;
+    &:hover, &:focus, &:active{
+      color: $black;
+    }
+  }
+
+  .navbar-nav > li > a{
+    font-weight: bold;
+    color: $white;
+    &:hover, &:focus, &:active{
+      color: $black;
+    }
+  }
+
+  .navbar-toggle .icon-bar {
+    background-color: $white;
+  }
+}
+
+.addBook{
+  margin-top: 20px;
+}
+
+.thumbnail.detail{
+  img{
+    width: 100%;
+    height: auto;
+  }
+}
+
+.container .longButton{
+    width: 50%;
+    padding: 10px;
+    margin: 10px auto 15px auto;
+    display: block;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.container{
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.footer{
+  box-shadow: 0px 500px 0px 500px $vin-green;
+}
+
+td {
+	padding: 12px;
+}
+
+
+.fa{
+  margin: 5px;
+  color: $white;
+}
+
+.btn{
+  margin-right: 10px;
+  margin-bottom: 15px;
+}
+
+.error{
+  color: $vin-red;
+}
