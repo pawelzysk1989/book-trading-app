@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link, IndexLink } from 'react-router';
-import LoadingDots from './LoadingDots';
 import { connect } from 'react-redux';
+import LoadingDots from './LoadingDots';
 
 class Header extends React.Component {
 
@@ -59,8 +59,8 @@ class Header extends React.Component {
 }
 
 Header.propTypes = {
-  loading: PropTypes.bool.isRequired,
   authenticated: PropTypes.bool,
+  loading: PropTypes.bool.isRequired
 };
 
 function mapStateToProps(state) {

@@ -1,4 +1,3 @@
-
 import React, { PropTypes } from 'react';
 import Header from "./common/Header";
 import Footer from "./common/Footer";
@@ -9,7 +8,7 @@ class App extends React.Component {
     return (
       <div>
         <Header
-        	loading={this.props.loading}
+          loading={this.props.loading} 
         />
         <div className="container">
           {this.props.children}
@@ -25,10 +24,11 @@ App.propTypes = {
   loading: PropTypes.bool.isRequired
 };
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return {
     loading: state.ajaxCallsInProgress > 0
   };
 }
 
-export default connect(mapStateToProps)(App);
+
+export default connect(mapStateToProps, null)(App);

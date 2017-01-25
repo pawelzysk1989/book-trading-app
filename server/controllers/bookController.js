@@ -14,7 +14,7 @@ exports.addBook = (req, res, next) => {
 exports.getMyBooks = (req, res, next) => {
   const userId = req.user._id;
 
-  Book.find({ owner: userId})
+  Book.find({ "owner._id": userId})
     .then( books => {
       return res.json({ books });
     })

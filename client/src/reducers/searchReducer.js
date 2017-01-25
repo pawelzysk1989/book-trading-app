@@ -3,7 +3,7 @@ import initialState from './initialState';
 
 export default function(state = initialState.search, action) {
 	switch(action.type) {
-		case types.SEARCH_FOR_BOOK: {
+		case types.SEARCH_FOR_BOOK_SUCCESS: {
 			return {...state, books: state.books.concat(action.payload.books), count: action.payload.count};
 		}
 		case types.CHANGE_SEARCH_CRITERIA: {
