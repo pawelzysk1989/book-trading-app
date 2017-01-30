@@ -14,6 +14,9 @@ module.exports = (app) => {
   app.get('/getMyBooks', requireAuth, bookController.getMyBooks);
   app.post('/removeBook', requireAuth, bookController.removeBook);
   app.get('/searchForBook', requireAuth, bookController.searchForBook);
+  app.post('/requestForBook', requireAuth, bookController.requestForBook);
+  app.post('/cancelRequest', requireAuth, bookController.cancelRequest);
+  app.post('/acceptRequest', requireAuth, bookController.acceptRequest);
   app.get('/getSettings', requireAuth, settingsController.getSettings);
   app.post('/saveSettings', requireAuth, settingsController.saveSettings);
   app.post('/changePassword', requireAuth, settingsController.changePassword);

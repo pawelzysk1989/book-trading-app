@@ -1,6 +1,8 @@
 export default {
 	myBooks: {
-		myBooks: []
+		myBooks: [],
+		requestsToMe: [],
+		myRequests: []
 	},
 	search: {
 		books: [],

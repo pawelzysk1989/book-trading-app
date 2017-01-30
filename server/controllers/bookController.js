@@ -56,3 +56,77 @@ const buildQuery = (criteria, userId) => {
   return query;
 };
 
+exports.requestForBook = (req, res, next) => {
+
+  const requestedBookId = req.body.requestedBookId;
+  const bookToExchangeId = req.body.bookToExchangeId;
+  Book.findByIdAndUpdate(
+    requestedBookId,
+      { 
+        $addToSet: {requests: bookToExchangeId } 
+      }
+    )
+    .then(() => {
+      return Promise.all([findBookById(requestedBookId), findBookById(bookToExchangeId)])
+    })
+    .then((books) => {
+      res.json({ 
+        requestedBook: books[0],
+        exchengedBook: books[1]
+      });
+    })
+    .catch(next)
+}
+
+exports.cancelRequest = (req, res, next) => {
+
+  const requestedBookId = req.body.requestedBookId;
+  const bookToExchangeId = req.body.bookToExchangeId;
+  Book.findByIdAndUpdate(
+    requestedBookId,
+      { 
+        $pull: { requests: bookToExchangeId } 
+      }
+    )
+    .then(() => Book.findById(requestedBookId))
+    .then( book => res.json({ canceledBook: book }))
+    .catch(next);
+}
+
+exports.acceptRequest = (req, res, next) => {
+
+  const requestedBookId = req.body.requestedBookId;
+  const bookToExchangeId = req.body.bookToExchangeId;
+
+  Promise.all([findOwner(requestedBookId), findOwner(bookToExchangeId)])
+    .then((owners) => {
+      Promise.all([changeOwner(requestedBookId, owners[1]), changeOwner(bookToExchangeId, owners[0])])
+    })
+    .then(() => {
+      return Promise.all([findBookById(requestedBookId), findBookById(bookToExchangeId)])
+    })
+    .then((books) => {
+      res.json({ 
+        requestedBook: books[0],
+        exchengedBook: books[1]
+      });
+    })
+    .catch(next)
+}
+
+
+const findOwner = (bookId) => {
+  return Book.findById(bookId)
+    .then( book => book.owner)
+}
+
+const changeOwner = (bookId, owner) => {
+  return Book.findByIdAndUpdate(bookId, {owner});
+}
+
+const findBookById = (bookId) => {
+  return Book.findById(bookId)
+}
+
+
+

@@ -19,6 +19,10 @@ export function unloadMyBooks() {
   return { type: types.UNLOAD_MY_BOOKS};
 }
 
+export function requestBookSuccess(requestedBook, exchengedBook) {
+  return { type: types.REQUEST_BOOK_SUCCESS, payload: {requestedBook, exchengedBook}};
+}
+
 export function addBook(book) {
   return function (dispatch) {
     dispatch(beginAjaxCall());
@@ -58,6 +62,18 @@ export function removeBook(id) {
   };
 }
 
+export function requestBook(requestedBookId, bookToExchangeId) {
+  return function (dispatch) {
+    dispatch(beginAjaxCall());
+    return axios.post(`${ROOT_URL}/requestForBook`, { requestedBookId,  bookToExchangeId}, { headers: { authorization: localStorage.getItem('token') } })
+      .then(response => {
+        dispatch(requestBookSuccess(response.data.requestedBook, response.data.exchengedBook));
+      }).catch(error => {
+        dispatch(ajaxCallError(error));
+        throw(error);
+      });
+  };
+}
 
 
 

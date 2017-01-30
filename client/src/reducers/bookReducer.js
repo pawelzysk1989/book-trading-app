@@ -15,6 +15,16 @@ export default function(state = initialState.myBooks, action) {
 		case types.REMOVE_BOOK_SUCCESS: {
 			return {...state, myBooks: state.myBooks.filter( book => book._id !== action.payload )};
 		}
+		case types.REQUEST_BOOK_SUCCESS: {
+			const requestedBook = action.payload.requestedBook;
+			const exchengedBook = action.payload.exchengedBook;
+			for (let i = 0; i < state.myRequests.length; i++) {
+				if(state.myRequests[i].requestedBook._id == requestedBook._id && state.myRequests[i].exchengedBook._id == exchengedBook._id){
+					return state;
+				}
+			}
+			return {...state, myRequests: [...state.myRequests, { requestedBook, exchengedBook }] };
+		}
 	}
 	
   return state;

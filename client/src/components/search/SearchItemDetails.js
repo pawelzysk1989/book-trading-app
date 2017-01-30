@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
+import SearchItemDetailsForm from './SearchItemDetailsForm';
 
 export class SearchItemDetails extends React.Component {
   constructor(props, context) {
@@ -36,13 +37,13 @@ export class SearchItemDetails extends React.Component {
                   <h4 className="pull-right">{book.owner.email}</h4>
                   <h4><a>Owner email</a></h4>
                 </div>
-              </li>,
+              </li>
               <li className="list-group-item" key="2">
                 <div className="caption-full">
                   <h4 className="pull-right">{book.owner.city}</h4>
                   <h4><a>Owner City</a></h4>
                 </div>
-              </li>,
+              </li>
               <li className="list-group-item" key="3">
                 <div className="caption-full">
                   <h4 className="pull-right">{book.owner.state}</h4>
@@ -50,6 +51,7 @@ export class SearchItemDetails extends React.Component {
                 </div>
               </li>
             </div>
+            <SearchItemDetailsForm reguestedBook={book._id}/>
         </div>
         <div className="col-md-3">
             <div className="thumbnail detail">

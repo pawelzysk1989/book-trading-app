@@ -9,7 +9,11 @@ const bookSchema = new Schema({
     type: String
   }],
   imageLink: String,
-  owner: userSchema
+  owner: userSchema,
+  requests: [{
+  	type: Schema.Types.ObjectId,
+  	ref: 'book'
+  }]
 });
 
 

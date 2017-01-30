@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import MyCollectionList from './MyCollectionList';
+import MyRequestList from './MyRequestList';
 import {bindActionCreators} from 'redux';
 import * as bookActions from '../../actions/bookActions';
 import toastr from 'toastr';
@@ -31,23 +32,30 @@ export class MyCollection extends React.Component {
 
   render() {
     return (
-      <MyCollectionList
-        books={this.props.books}
-        selectedBook={this.state.selectedBook}
-        removeBook={this.removeBook}
-      />
+      <div>
+        <MyRequestList 
+          myRequests={this.props.myRequests}
+        />
+        <MyCollectionList
+          books={this.props.books}
+          selectedBook={this.state.selectedBook}
+          removeBook={this.removeBook}
+        />
+      </div>
     );
   }
 }
 
 MyCollection.propTypes = {
   books: PropTypes.array.isRequired,
+  myRequests: PropTypes.array.isRequired,
   actions: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
   return {
-    books: state.books.myBooks
+    books: state.books.myBooks,
+    myRequests: state.books.myRequests
   };
 }
 
