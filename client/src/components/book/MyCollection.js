@@ -15,6 +15,7 @@ export class MyCollection extends React.Component {
     };
 
     this.removeBook = this.removeBook.bind(this);
+    this.cancelRequest = this.cancelRequest.bind(this);
   }
 
   removeBook(id, selectedBook){
@@ -30,11 +31,22 @@ export class MyCollection extends React.Component {
       });
   }
 
+  cancelRequest(event, index){
+    event.preventDefault();
+    const requestedBookId = this.props.myRequests[index].requestedBook._id;
+    const bookToExchangeId = this.props.myRequests[index].offeredBook._id;
+    this.props.actions.cancelBook(requestedBookId, bookToExchangeId, index) 
+      .catch(error => {
+        toastr.error(error.response.data.error);
+      });
+  }
+
   render() {
     return (
       <div>
         <MyRequestList 
           myRequests={this.props.myRequests}
+          cancelRequest={this.cancelRequest}
         />
         <MyCollectionList
           books={this.props.books}

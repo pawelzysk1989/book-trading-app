@@ -93,4 +93,42 @@ td {
   color: $vin-red;
 }
 
+/* Styling request list*/
+#requestList {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.item {
+  position: relative;
+  box-sizing: border-box;
+  padding: 10px;
+  list-style-type: none;
+  width: 100%;
+  border-bottom:  1px  solid #7d82b0;
+
+}
+
+
+.item .value {
+  margin: 0 30px 0 0;
+  padding: 0 10px;
+}
+
+.item .complete-button {
+  position: absolute;
+  right: 40px;
+  top: 10px;
+  cursor: pointer;
+}
+
+.item .delete-button {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  cursor: pointer;
+}
+
 

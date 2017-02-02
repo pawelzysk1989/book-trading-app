@@ -15,6 +15,8 @@ exports.getMyBooks = (req, res, next) => {
   const userId = req.user._id;
 
   Book.find({ "owner._id": userId})
+    .populate('asRequestFor')
+    .populate('inExchangeFor')
     .then( books => {
       return res.json({ books });
     })
@@ -57,41 +59,48 @@ const buildQuery = (criteria, userId) => {
 };
 
 exports.requestForBook = (req, res, next) => {
-
   const requestedBookId = req.body.requestedBookId;
   const bookToExchangeId = req.body.bookToExchangeId;
-  Book.findByIdAndUpdate(
-    requestedBookId,
-      { 
-        $addToSet: {requests: bookToExchangeId } 
-      }
-    )
+  return Promise.all([findBookByIdAndUpdateSet(requestedBookId, bookToExchangeId, "asRequestFor", "$addToSet"), findBookByIdAndUpdateSet(bookToExchangeId, requestedBookId, "inExchangeFor", "$addToSet")])
     .then(() => {
       return Promise.all([findBookById(requestedBookId), findBookById(bookToExchangeId)])
     })
     .then((books) => {
       res.json({ 
         requestedBook: books[0],
-        exchengedBook: books[1]
+        offeredBook: books[1]
       });
     })
     .catch(next)
+}
+
+
+const findBookByIdAndUpdateSet = (regestedBookId, exchangeBookId, field, action) => {
+  return Book.findByIdAndUpdate(
+    regestedBookId,
+      { 
+        [action]: {[field]: exchangeBookId}
+      }
+    )
 }
 
 exports.cancelRequest = (req, res, next) => {
 
   const requestedBookId = req.body.requestedBookId;
   const bookToExchangeId = req.body.bookToExchangeId;
-  Book.findByIdAndUpdate(
-    requestedBookId,
-      { 
-        $pull: { requests: bookToExchangeId } 
-      }
-    )
-    .then(() => Book.findById(requestedBookId))
-    .then( book => res.json({ canceledBook: book }))
-    .catch(next);
+  return Promise.all([findBookByIdAndUpdateSet(requestedBookId, bookToExchangeId, "asRequestFor", "$pull"), findBookByIdAndUpdateSet(bookToExchangeId, requestedBookId, "inExchangeFor", "$pull")])
+    .then(() => {
+      return Promise.all([findBookById(requestedBookId), findBookById(bookToExchangeId)])
+    })
+    .then((books) => {
+      res.json({ 
+        requestedBook: books[0],
+        offeredBook: books[1]
+      });
+    })
+    .catch(next)
 }
+
 
 exports.acceptRequest = (req, res, next) => {
 

@@ -10,7 +10,11 @@ const bookSchema = new Schema({
   }],
   imageLink: String,
   owner: userSchema,
-  requests: [{
+  asRequestFor: [{
+  	type: Schema.Types.ObjectId,
+  	ref: 'book'
+  }],
+  inExchangeFor: [{
   	type: Schema.Types.ObjectId,
   	ref: 'book'
   }]
