@@ -14,9 +14,7 @@ exports.addBook = (req, res, next) => {
 exports.getMyBooks = (req, res, next) => {
   const userId = req.user._id;
 
-  Book.find({ "owner._id": userId})
-    .populate('asRequestFor')
-    .populate('inExchangeFor')
+  getAllMyBooks(userId)
     .then( books => {
       return res.json({ books });
     })
@@ -24,9 +22,11 @@ exports.getMyBooks = (req, res, next) => {
 }
 
 exports.removeBook = (req, res, next) => {
-
-  Book.findByIdAndRemove({ _id: req.body.id })
-    .then(book => res.json({ id: book._id }))
+  return Book.findByIdAndRemove({ _id: req.body.id })
+    .then((book) => {
+      return updateRequest(book, "asRequestFor", "inExchangeFor");
+    })
+    .then(() => res.json({ id: req.body.id }))
     .catch(next);
 }
 
@@ -42,7 +42,7 @@ exports.searchForBook = (req, res, next) => {
     
   return Promise.all([query, Book.find(buildQuery(criteria, userId)).count()])
     .then((results) => {
-      res.json({ 
+      return res.json({ 
         books: results[0],
         count: results[1]
       });
@@ -66,7 +66,7 @@ exports.requestForBook = (req, res, next) => {
       return Promise.all([findBookById(requestedBookId), findBookById(bookToExchangeId)])
     })
     .then((books) => {
-      res.json({ 
+      return res.json({ 
         requestedBook: books[0],
         offeredBook: books[1]
       });
@@ -93,7 +93,7 @@ exports.cancelRequest = (req, res, next) => {
       return Promise.all([findBookById(requestedBookId), findBookById(bookToExchangeId)])
     })
     .then((books) => {
-      res.json({ 
+      return res.json({ 
         requestedBook: books[0],
         offeredBook: books[1]
       });
@@ -103,26 +103,55 @@ exports.cancelRequest = (req, res, next) => {
 
 
 exports.acceptRequest = (req, res, next) => {
-
   const requestedBookId = req.body.requestedBookId;
   const bookToExchangeId = req.body.bookToExchangeId;
 
   Promise.all([findOwner(requestedBookId), findOwner(bookToExchangeId)])
     .then((owners) => {
-      Promise.all([changeOwner(requestedBookId, owners[1]), changeOwner(bookToExchangeId, owners[0])])
-    })
-    .then(() => {
-      return Promise.all([findBookById(requestedBookId), findBookById(bookToExchangeId)])
+      return Promise.all([changeOwner(requestedBookId, owners[1]), changeOwner(bookToExchangeId, owners[0])]);
     })
     .then((books) => {
-      res.json({ 
-        requestedBook: books[0],
-        exchengedBook: books[1]
+      return Promise.all([updateRequests(books[0]), updateRequests(books[1])]);
+    })
+    .then(() => {
+      const userId = req.user._id;
+      return getAllMyBooks(userId);
+    })
+    .then(books=> {
+      return res.json({ 
+        books
       });
     })
     .catch(next)
 }
 
+
+const updateRequests = (book) => {
+  return updateRequest(book, "asRequestFor", "inExchangeFor")
+  .then(() =>{
+    return updateRequest(book, "inExchangeFor", "asRequestFor")
+  })
+  .then(() => {
+    return Book.findByIdAndUpdate(book._id, {asRequestFor: [], inExchangeFor: []})
+  })
+  .then(() => {
+    return Book.findById(book._id)
+  })
+}
+
+const updateRequest = (book, fieldName1, fieldName2) => {
+  return Book.update({ _id : { $in : book[fieldName1] } }, 
+    { 
+      $pull: {[fieldName2]: book._id}
+    },
+    { multi: true })
+}
+
+const getAllMyBooks = (userId) => {
+  return Book.find({ "owner._id": userId})
+    .populate('asRequestFor')
+    .populate('inExchangeFor')
+}
 
 const findOwner = (bookId) => {
   return Book.findById(bookId)

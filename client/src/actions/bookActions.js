@@ -23,8 +23,8 @@ export function requestBookSuccess(requestedBook, offeredBook) {
   return { type: types.REQUEST_BOOK_SUCCESS, payload: {requestedBook, offeredBook}};
 }
 
-export function cancelBookSuccess(index) {
-  return { type: types.CANCEL_BOOK_SUCCESS, payload: {index}};
+export function cancelRequestSuccess(index, isMyRequests) {
+  return { type: types.CANCEL_BOOK_SUCCESS, payload: {index, isMyRequests}};
 }
 
 export function addBook(book) {
@@ -79,10 +79,10 @@ export function requestBook(requestedBookId, bookToExchangeId) {
   };
 }
 
-export function cancelBook(requestedBookId, bookToExchangeId, index) {
+export function cancelRequest(requestedBookId, bookToExchangeId, index, isMyRequests) {
   return function (dispatch) {
     dispatch(beginAjaxCall());
-    dispatch(cancelBookSuccess(index));
+    dispatch(cancelRequestSuccess(index, isMyRequests));
     return axios.post(`${ROOT_URL}/cancelRequest`, { requestedBookId,  bookToExchangeId}, { headers: { authorization: localStorage.getItem('token') } })
       .catch(error => {
         dispatch(ajaxCallError(error));
@@ -90,6 +90,24 @@ export function cancelBook(requestedBookId, bookToExchangeId, index) {
       });
   };
 }
+
+export function acceptRequest(requestedBook, bookToExchange) {
+  const requestedBookId = requestedBook._id;
+  const bookToExchangeId = bookToExchange._id;
+  return function (dispatch) {
+    dispatch(beginAjaxCall());
+    return axios.post(`${ROOT_URL}/acceptRequest`, { requestedBookId,  bookToExchangeId}, { headers: { authorization: localStorage.getItem('token') } })
+      .then( (response) => {
+        dispatch(loadMyBooksSuccess(response.data.books));
+      })
+      .catch(error => {
+        dispatch(ajaxCallError(error));
+        throw(error);
+      });
+  };
+}
+
+
 
 
 

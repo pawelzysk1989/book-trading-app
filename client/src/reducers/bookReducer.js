@@ -9,15 +9,18 @@ export default function(state = initialState.myBooks, action) {
 		case types.LOAD_MY_BOOKS_SUCCESS: {
 			const myBooks = action.payload;
 			const requests = parseRequests(myBooks);
-			const myRequests = requests[0];
-			const requestsToMe = requests[1];
+			const myRequests = requests.myRequests;
+			const requestsToMe = requests.readersRequests;
 			return {...state, myBooks, myRequests, requestsToMe};
 		}
 		case types.UNLOAD_MY_BOOKS: {
 			return initialState.myBooks;
 		}
 		case types.REMOVE_BOOK_SUCCESS: {
-			return {...state, myBooks: state.myBooks.filter( book => book._id !== action.payload )};
+			const removedBookId = action.payload;
+			const myRequests = removeRequests(removedBookId, state.myRequests, false);
+			const requestsToMe = removeRequests(removedBookId, state.requestsToMe, true);
+			return {...state, myBooks: state.myBooks.filter( book => book._id !== removedBookId ), myRequests, requestsToMe};
 		}
 		case types.REQUEST_BOOK_SUCCESS: {
 			const requestedBook = action.payload.requestedBook;
@@ -31,13 +34,23 @@ export default function(state = initialState.myBooks, action) {
 		}
 		case types.CANCEL_BOOK_SUCCESS: {
 			const indexToRemove = action.payload.index;
-			const myRequests = state.myRequests.filter( (request, index) => index !== indexToRemove );
-			return {...state, myRequests };
+			const isMyRequests = action.payload.isMyRequests;
+			const requestsName = isMyRequests ? "myRequests" : "requestsToMe";
+			const requests = state[requestsName].filter( (request, index) => index !== indexToRemove );
+			return {...state, [requestsName]: requests };
 		}
+
 	}
 	
   return state;
 }
+
+const removeRequests = (removedBookId, requests, isRequestToMe) => {
+	const consideredField = isRequestToMe ? "requestedBook" : "offeredBook";
+	return requests.filter( request => {
+		return request[consideredField]._id !== removedBookId;
+	});
+};
 
 const parseRequests = (books) => {
 	const myRequests = [];
@@ -51,5 +64,5 @@ const parseRequests = (books) => {
 			readersRequests.push({requestedBook: book, offeredBook});
 		});
 	});
-	return [myRequests, readersRequests];
+	return {myRequests, readersRequests};
 };
