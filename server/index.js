@@ -9,7 +9,8 @@ const cors = require('cors');
 
 // DB Setup
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/bookTradingApp');
+const databaseUrl = process.env.DATABASEURL || 'mongodb://localhost/bookTradingApp';
+mongoose.connect(databaseUrl);
 
 // App Setup
 app.use(morgan('combined'));

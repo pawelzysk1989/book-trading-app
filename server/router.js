@@ -8,6 +8,9 @@ const requireAuth = passport.authenticate('jwt', { session: false });
 const requireSignin = passport.authenticate('local', { session: false });
 
 module.exports = (app) => {
+  app.get('/', function(req, res, next) {
+    res.status(200).send("Hi, It works!")
+  });
   app.post('/signin', requireSignin, Authentication.signin);
   app.post('/signup', Authentication.signup);
   app.post('/addBook', requireAuth, bookController.addBook);
